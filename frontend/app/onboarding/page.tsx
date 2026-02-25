@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { Suspense, useState, useEffect, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -19,7 +19,15 @@ type SurveyResponses = {
   main_goal?: string;
 };
 
-export default function OnboardingPage() {
+function OnboardingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="h-8 w-48 bg-white/10 rounded-lg animate-pulse" />
+    </div>
+  );
+}
+
+function OnboardingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orgNameFromSignup = useMemo(() => searchParams.get("org_name")?.trim() || undefined, [searchParams]);
@@ -397,5 +405,13 @@ export default function OnboardingPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense fallback={<OnboardingFallback />}>
+      <OnboardingContent />
+    </Suspense>
   );
 }

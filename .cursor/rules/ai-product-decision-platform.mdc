@@ -1,0 +1,33 @@
+---
+description: North Star and guardrails for the AI Product Decision Platform
+alwaysApply: true
+---
+
+# AI Product Decision Platform — North Star & Guardrails
+
+## Positioning (North Star)
+
+**AI Product Manager for early-stage AI SaaS teams: tells you what is broken, why, and what to fix this week — not another dashboard.**
+
+## Guardrails (enforce in every decision)
+
+- **No dashboards** — no generic analytics or status dashboards.
+- **No MLOps/infra metrics** — no infrastructure, model ops, or system metrics.
+- **Opinionated recommendations** — clear “do this / don’t do this” guidance.
+- **Weekly value delivery** — outputs must support “what to fix this week.”
+- **Evidence-backed cards** — every recommendation must be tied to evidence (data, user feedback, or product signals).
+
+## AI prompt (include in source files)
+
+In every new or edited source file (e.g. `.ts`, `.tsx`, `.js`, `.jsx`, `.py`), add this as a leading comment:
+
+```
+You are helping build an AI Product Decision Platform. Never add generic charts or infra metrics. All outputs must directly support: what is broken, why, and what to fix first for an AI SaaS product.
+```
+
+## Out of scope
+
+- Generic charts, KPIs, or health dashboards.
+- MLOps, infra, or platform metrics.
+- Vague or non-actionable suggestions.
+- Anything that does not answer: what is broken, why, and what to fix first (this week).

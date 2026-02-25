@@ -1,0 +1,59 @@
+/* You are helping build an AI Product Decision Platform. Never add generic charts or infra metrics. All outputs must directly support: what is broken, why, and what to fix first for an AI SaaS product. */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --violet: #7c3aed;
+  --cyan: #22d3ee;
+  --amber: #f59e0b;
+  --dark: #0f0a1a;
+  --card: #1a1625;
+}
+
+body {
+  @apply bg-brand-dark text-white font-body antialiased;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(124, 58, 237, 0.25), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(34, 211, 238, 0.12), transparent),
+    radial-gradient(ellipse 50% 30% at 0% 50%, rgba(245, 158, 11, 0.08), transparent);
+  min-height: 100vh;
+}
+
+/* 3D card hover */
+.card-3d {
+  transform-style: preserve-3d;
+  transform: perspective(1000px);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.card-3d:hover {
+  transform: perspective(1000px) rotateX(2deg) translateY(-4px);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(124, 58, 237, 0.2),
+    0 0 40px -10px rgba(124, 58, 237, 0.3);
+}
+
+/* Glass panel */
+.glass {
+  @apply bg-white/5 border border-white/10 backdrop-blur-xl;
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-violet via-brand-cyan to-brand-amber;
+}
+
+/* Button primary */
+.btn-primary {
+  @apply px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300;
+  @apply bg-gradient-to-r from-brand-violet to-brand-cyan text-white;
+  @apply hover:shadow-lg hover:shadow-brand-violet/30 hover:scale-[1.02] active:scale-[0.98];
+}
+
+/* Button secondary / outline */
+.btn-secondary {
+  @apply px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300;
+  @apply border-2 border-brand-violet/50 text-brand-cyan hover:bg-brand-violet/20;
+}

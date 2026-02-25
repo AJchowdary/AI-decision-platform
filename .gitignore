@@ -1,0 +1,36 @@
+# Env and secrets — never commit these
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env.local
+*.pem
+
+# Python — never commit venv
+backend/.venv/
+backend/.venv
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Node — never commit dependencies or build output
+node_modules/
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+.npm
+.yarn
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

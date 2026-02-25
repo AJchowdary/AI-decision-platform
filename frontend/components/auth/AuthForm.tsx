@@ -11,6 +11,7 @@ type Mode = "login" | "signup";
 export default function AuthForm({ mode }: { mode: Mode }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [orgName, setOrgName] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "ok" | "error"; text: string } | null>(null);
   const router = useRouter();
@@ -31,7 +32,8 @@ export default function AuthForm({ mode }: { mode: Mode }) {
     }
     if (mode === "signup") {
       if (data?.session) {
-        window.location.href = "/onboarding";
+        const q = orgName.trim() ? `?org_name=${encodeURIComponent(orgName.trim())}` : "";
+        window.location.href = `/onboarding${q}`;
         return;
       }
       setMessage({ type: "ok", text: "Check your email to confirm. When you sign in, you'll complete a short onboarding." });
@@ -85,6 +87,15 @@ export default function AuthForm({ mode }: { mode: Mode }) {
           minLength={6}
           className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-brand-violet/50 focus:border-transparent transition"
         />
+        {mode === "signup" && (
+          <input
+            type="text"
+            placeholder="Organization name (optional)"
+            value={orgName}
+            onChange={(e) => setOrgName(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-brand-violet/50 focus:border-transparent transition"
+          />
+        )}
         <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-50">
           {loading ? "..." : mode === "signup" ? "Create account" : "Sign in"}
         </button>

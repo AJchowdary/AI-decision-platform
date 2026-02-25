@@ -2,9 +2,9 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 type AccountType = "organization" | "individual" | null;
@@ -21,6 +21,8 @@ type SurveyResponses = {
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const orgNameFromSignup = useMemo(() => searchParams.get("org_name")?.trim() || undefined, [searchParams]);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   const [step, setStep] = useState(1);
   const [accountType, setAccountType] = useState<AccountType>(null);
@@ -29,6 +31,10 @@ export default function OnboardingPage() {
   const [error, setError] = useState<string | null>(null);
   const [trialStarted, setTrialStarted] = useState(false);
   const [checkingOrg, setCheckingOrg] = useState(true);
+
+  useEffect(() => {
+    if (orgNameFromSignup) setSurvey((s) => ({ ...s, org_name: orgNameFromSignup }));
+  }, [orgNameFromSignup]);
 
   useEffect(() => {
     async function checkOrg() {
@@ -50,7 +56,8 @@ export default function OnboardingPage() {
         }
         const isExistingUser = !!session.user?.user_metadata?.onboarding_completed_at;
         if (isExistingUser) {
-          router.push("/onboarding/create-org");
+          // Existing user: go straight to dashboard (org created there if missing).
+          router.push("/decision-cards");
           return;
         }
         // New user (no org, no onboarding_completed_at): show questionnaire.
@@ -79,6 +86,42 @@ export default function OnboardingPage() {
   const canProceedStep3 =
     survey.role && survey.use_case && (accountType === "individual" ? survey.how_heard : true);
 
+  async function handleSkip() {
+    setError(null);
+    setLoading(true);
+    const supabase = createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) {
+      router.push("/login");
+      setLoading(false);
+      return;
+    }
+    const name = orgNameFromSignup || (survey.org_name || "").trim() || "My workspace";
+    try {
+      const res = await fetch(`${apiUrl}/organizations`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ name }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Something went wrong.");
+      await supabase.auth.updateUser({
+        data: { onboarding_completed_at: new Date().toISOString() },
+      });
+      setTrialStarted(true);
+      setTimeout(() => {
+        window.location.href = "/decision-cards";
+      }, 3500);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to complete setup.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleFinish() {
     setError(null);
     setLoading(true);
@@ -91,8 +134,8 @@ export default function OnboardingPage() {
     }
     const name =
       accountType === "organization"
-        ? (survey.org_name || "").trim() || "My team"
-        : "My workspace";
+        ? (survey.org_name || "").trim() || orgNameFromSignup || "My team"
+        : orgNameFromSignup || "My workspace";
     const payload = {
       name,
       account_type: accountType || undefined,
@@ -112,7 +155,6 @@ export default function OnboardingPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Something went wrong.");
-      const supabase = createClient();
       await supabase.auth.updateUser({
         data: { onboarding_completed_at: new Date().toISOString() },
       });
@@ -189,6 +231,16 @@ export default function OnboardingPage() {
                 <span className="font-display font-semibold text-white block">Individual</span>
                 <span className="text-white/60 text-sm">I&apos;m signing up for myself</span>
               </button>
+              <p className="text-center pt-2">
+                <button
+                  type="button"
+                  onClick={handleSkip}
+                  disabled={loading}
+                  className="text-white/50 hover:text-white/80 text-sm underline disabled:opacity-50"
+                >
+                  Skip questions and go to dashboard
+                </button>
+              </p>
             </div>
           )}
 
@@ -280,6 +332,16 @@ export default function OnboardingPage() {
                   Next
                 </button>
               </div>
+              <p className="text-center pt-3">
+                <button
+                  type="button"
+                  onClick={handleSkip}
+                  disabled={loading}
+                  className="text-white/50 hover:text-white/80 text-sm underline disabled:opacity-50"
+                >
+                  Skip questions and go to dashboard
+                </button>
+              </p>
             </div>
           )}
 
@@ -316,6 +378,16 @@ export default function OnboardingPage() {
                   {loading ? "Creating…" : "Start my trial"}
                 </button>
               </div>
+              <p className="text-center pt-3">
+                <button
+                  type="button"
+                  onClick={handleSkip}
+                  disabled={loading}
+                  className="text-white/50 hover:text-white/80 text-sm underline disabled:opacity-50"
+                >
+                  Skip questions and go to dashboard
+                </button>
+              </p>
               {error && <p className="text-red-400 text-sm">{error}</p>}
             </div>
           )}

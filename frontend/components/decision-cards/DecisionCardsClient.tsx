@@ -190,43 +190,62 @@ export default function DecisionCardsClient() {
       )}
 
       {!hasCards && (
-        <div className="card-3d glass rounded-2xl p-10 text-center">
-          {!orgLoading && !canUpload && (
-            <div className="rounded-xl border border-amber-400/50 bg-amber-400/10 p-4 mb-6 text-left">
-              <p className="text-amber-200 font-medium mb-1">Trial ended</p>
-              <p className="text-white/80 text-sm mb-3">Subscribe ($20/month) to generate Decision Cards.</p>
-              <Link href="/settings" className="btn-primary inline-block">Subscribe in Settings</Link>
+        <>
+          <section>
+            <h2 className="font-display text-lg font-semibold text-white/50 mb-4">Preview — your cards will look like this</h2>
+            <div className="grid gap-4 md:grid-cols-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="card-3d glass rounded-2xl p-6 border border-white/10 opacity-60 pointer-events-none">
+                  <div className="h-5 w-full bg-white/10 rounded mb-2" />
+                  <div className="h-4 w-full max-w-[90%] bg-white/5 rounded mb-4" />
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-2 py-1 rounded-lg bg-white/10 text-white/50 text-xs">Impact —</span>
+                    <span className="px-2 py-1 rounded-lg bg-white/10 text-white/50 text-xs">Effort —</span>
+                    <span className="px-2 py-1 rounded-lg bg-white/10 text-white/50 text-xs">Confidence —</span>
+                  </div>
+                  <p className="text-white/30 text-xs mt-3">View details →</p>
+                </div>
+              ))}
             </div>
-          )}
-          <p className="text-white/80 mb-2">No Decision Cards yet.</p>
-          <p className="text-white/60 text-sm mb-6">
-            Upload your AI logs first, then we’ll surface the top issues and what to fix this week.
-          </p>
-          <div className="flex flex-col items-center gap-3">
-            <Link href="/ingestion" className="btn-primary inline-block">
-              Upload logs
-            </Link>
-            <p className="text-white/50 text-xs">Then generate insights and Decision Cards from the links below.</p>
-            <div className="flex flex-wrap justify-center gap-3 text-sm text-white/50">
-              <a href="/ingestion" className="hover:text-white/80">Upload logs</a>
-              <span>→</span>
-              <a href="/insights/generate" className="hover:text-white/80">Generate insights</a>
-              <span>→</span>
-              <span className="text-brand-cyan">Decision Cards</span>
-            </div>
-            <button
-              type="button"
-              onClick={handleGenerateCards}
-              disabled={generateLoading || !canUpload}
-              className="btn-secondary text-sm disabled:opacity-50"
-            >
-              {generateLoading ? "Generating…" : "Generate Decision Cards (if you have insights)"}
-            </button>
-            {generateError && (
-              <p className="text-red-300 text-sm">{generateError}</p>
+          </section>
+          <div className="card-3d glass rounded-2xl p-10 text-center border border-dashed border-white/20">
+            {!orgLoading && !canUpload && (
+              <div className="rounded-xl border border-amber-400/50 bg-amber-400/10 p-4 mb-6 text-left">
+                <p className="text-amber-200 font-medium mb-1">Trial ended</p>
+                <p className="text-white/80 text-sm mb-3">Subscribe ($20/month) to generate Decision Cards.</p>
+                <Link href="/settings" className="btn-primary inline-block">Subscribe in Settings</Link>
+              </div>
             )}
+            <p className="text-white/80 mb-2">No Decision Cards yet.</p>
+            <p className="text-white/60 text-sm mb-6">
+              Upload your AI logs first, then we’ll surface the top issues and what to fix this week.
+            </p>
+            <div className="flex flex-col items-center gap-3">
+              <Link href="/ingestion" className="btn-primary inline-block">
+                Upload logs
+              </Link>
+              <p className="text-white/50 text-xs">Then generate insights and Decision Cards from the links below.</p>
+              <div className="flex flex-wrap justify-center gap-3 text-sm text-white/50">
+                <a href="/ingestion" className="hover:text-white/80">Upload logs</a>
+                <span>→</span>
+                <a href="/insights/generate" className="hover:text-white/80">Generate insights</a>
+                <span>→</span>
+                <span className="text-brand-cyan">Decision Cards</span>
+              </div>
+              <button
+                type="button"
+                onClick={handleGenerateCards}
+                disabled={generateLoading || !canUpload}
+                className="btn-secondary text-sm disabled:opacity-50"
+              >
+                {generateLoading ? "Generating…" : "Generate Decision Cards (if you have insights)"}
+              </button>
+              {generateError && (
+                <p className="text-red-300 text-sm">{generateError}</p>
+              )}
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

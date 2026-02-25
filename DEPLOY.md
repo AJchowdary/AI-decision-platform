@@ -97,7 +97,9 @@ Deploy **frontend** to Vercel and **backend** to Render. Auth and DB stay on Sup
 
 ## 4. Wire production URLs
 
-1. **Supabase:** In **Authentication → URL configuration**, set **Site URL** to your Vercel URL and add it to **Redirect URLs**.
+1. **Supabase (required for sign-in in production):** In **Authentication → URL configuration**:
+   - **Site URL:** set to your **production** frontend URL (e.g. `https://your-app.vercel.app`). If this is still `http://localhost:3000`, after Google sign-in Supabase redirects to localhost and you get “localhost refused to connect”.
+   - **Redirect URLs:** add `https://your-app.vercel.app/auth/callback` (you can keep `http://localhost:3000/auth/callback` for local dev). Save and try sign-in again on the deployed site.
 2. **Render:** Set `ALLOWED_ORIGINS` to your production frontend URL(s) so the browser can call the API (CORS). Example: `https://your-app.vercel.app,https://www.yourdomain.com`
 3. **Billing:** Set `FRONTEND_BASE_URL` on Render to your frontend URL (e.g. `https://your-app.vercel.app`) so Stripe checkout redirects to the correct success/cancel pages.
 

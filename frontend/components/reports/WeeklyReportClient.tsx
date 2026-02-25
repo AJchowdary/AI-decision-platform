@@ -69,15 +69,24 @@ export default function WeeklyReportClient() {
 
   if (message && !report) {
     return (
-      <div className="card-3d glass rounded-2xl p-8">
-        <h1 className="font-display text-2xl font-bold text-white mb-2">Weekly AI Product Report</h1>
+      <div className="space-y-8">
+        <h1 className="font-display text-2xl font-bold text-white">Weekly AI Product Report</h1>
         <p className="text-white/70">{message}</p>
-        <p className="text-white/50 text-sm mt-4">Generate Decision Cards first, then return here.</p>
+        <p className="text-white/50 text-sm">Generate Decision Cards first, then return here.</p>
+        <PlaceholderReportLayout />
       </div>
     );
   }
 
-  if (!report) return null;
+  if (!report) {
+    return (
+      <div className="space-y-8">
+        <h1 className="font-display text-2xl font-bold text-white">Weekly AI Product Report</h1>
+        <p className="text-white/60 text-sm">Your weekly summary will appear here once you have Decision Cards.</p>
+        <PlaceholderReportLayout />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -126,6 +135,42 @@ export default function WeeklyReportClient() {
           <p className="text-white/90">{report.thing_not_to_change}</p>
         </div>
       </section>
+    </div>
+  );
+}
+
+function PlaceholderReportLayout() {
+  return (
+    <div className="space-y-8 opacity-60">
+      <section>
+        <h2 className="font-display text-lg font-semibold text-white/70 mb-4">Top 3 issues</h2>
+        <ul className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <li key={i} className="card-3d glass rounded-xl p-4 border border-white/10">
+              <div className="h-5 w-3/4 bg-white/10 rounded mb-2" />
+              <div className="h-4 w-full max-w-[85%] bg-white/5 rounded" />
+              <div className="flex gap-2 mt-2">
+                <span className="px-2 py-0.5 rounded bg-white/10 text-white/40 text-xs">Impact —</span>
+                <span className="px-2 py-0.5 rounded bg-white/10 text-white/40 text-xs">Effort —</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section>
+        <h2 className="font-display text-lg font-semibold text-white/70 mb-4">1 thing to fix this week</h2>
+        <div className="card-3d glass rounded-xl p-6 border border-white/10">
+          <div className="h-5 w-2/3 bg-white/10 rounded mb-2" />
+          <div className="h-4 w-full bg-white/5 rounded" />
+        </div>
+      </section>
+      <section>
+        <h2 className="font-display text-lg font-semibold text-white/70 mb-4">1 thing not to change</h2>
+        <div className="card-3d glass rounded-xl p-6 border border-white/10">
+          <div className="h-4 w-full bg-white/5 rounded" />
+        </div>
+      </section>
+      <p className="text-white/40 text-xs">Placeholder — real content appears after you generate Decision Cards.</p>
     </div>
   );
 }

@@ -4,6 +4,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useOrganization } from "@/lib/org";
 
@@ -20,9 +21,26 @@ type CardPlaceholder = {
 }
 
 export default function DecisionCardsClient() {
+  const router = useRouter();
   const { orgState, loading: orgLoading } = useOrganization();
   const canUpload = orgState?.can_upload !== false;
   const [cards, setCards] = useState<CardPlaceholder[]>([]);
+
+  // No org: new user → questionnaire (independent of org); existing user → simple create-org only (no questionnaire).
+  useEffect(() => {
+    if (orgLoading) return;
+    if (!orgState || orgState.organization !== null) return;
+    (async () => {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const isExistingUser = !!session?.user?.user_metadata?.onboarding_completed_at;
+      if (isExistingUser) {
+        router.replace("/onboarding/create-org");
+      } else {
+        router.replace("/onboarding");
+      }
+    })();
+  }, [orgLoading, orgState, router]);
   const [top3, setTop3] = useState<CardPlaceholder[]>([]);
   const [loading, setLoading] = useState(true);
   const [generateLoading, setGenerateLoading] = useState(false);

@@ -43,10 +43,16 @@ export default function OnboardingPage() {
           headers: { Authorization: `Bearer ${session.access_token}` },
         });
         const data = await res.json();
-        if (data?.organization) {
-          router.push("/decision-cards");
+        const isExistingUser = !!session.user?.user_metadata?.onboarding_completed_at;
+        if (isExistingUser) {
+          if (data?.organization) {
+            router.push("/decision-cards");
+            return;
+          }
+          router.push("/onboarding/create-org");
           return;
         }
+        // New user (no onboarding_completed_at): always show questionnaire, independent of org.
       } finally {
         setCheckingOrg(false);
       }
@@ -105,6 +111,10 @@ export default function OnboardingPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Something went wrong.");
+      const supabase = createClient();
+      await supabase.auth.updateUser({
+        data: { onboarding_completed_at: new Date().toISOString() },
+      });
       setTrialStarted(true);
       setTimeout(() => {
         window.location.href = "/decision-cards";
@@ -161,7 +171,7 @@ export default function OnboardingPage() {
 
           {step === 1 && (
             <div className="space-y-4">
-              <p className="text-white/70 text-sm mb-6">This helps us tailor the product and understand our users.</p>
+              <p className="text-white/70 text-sm mb-2">For our analytics only — it doesn&apos;t change how the product works. You can optionally use an organization name for your account later.</p>
               <button
                 type="button"
                 onClick={() => handleAccountTypeChoose("organization")}
@@ -185,7 +195,7 @@ export default function OnboardingPage() {
             <div className="space-y-4">
               {accountType === "organization" && (
                 <div>
-                  <label className="block text-white/80 text-sm font-medium mb-2">Organization or team name</label>
+                  <label className="block text-white/80 text-sm font-medium mb-2">Organization or team name (optional — for your reference and our analytics)</label>
                   <input
                     type="text"
                     placeholder="e.g. Acme AI"

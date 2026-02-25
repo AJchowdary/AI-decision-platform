@@ -37,7 +37,7 @@ export default function AuthForm({ mode }: { mode: Mode }) {
       setMessage({ type: "ok", text: "Check your email to confirm. When you sign in, you'll complete a short onboarding." });
       return;
     }
-    window.location.href = "/onboarding";
+    window.location.href = "/decision-cards";
   }
 
   async function handleGoogleSignIn() {

@@ -21,8 +21,8 @@ def get_supabase():
 
 class CreateOrganizationBody(BaseModel):
     name: str
-    account_type: str | None = None  # "organization" | "individual"
-    survey_responses: dict | None = None  # onboarding questionnaire answers
+    account_type: str | None = None  # analytics only: "organization" | "individual"
+    survey_responses: dict | None = None  # analytics only: onboarding answers; no product behavior
 
 
 def _slug_from_name(name: str) -> str:

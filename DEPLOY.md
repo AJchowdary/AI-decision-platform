@@ -47,7 +47,9 @@ Deploy **frontend** to Vercel and **backend** to Render. Auth and DB stay on Sup
    - **Site URL:** your production frontend URL (e.g. `https://your-app.vercel.app`). Use `http://localhost:3000` for local only.
    - **Redirect URLs:** add:
      - `http://localhost:3000/auth/callback`
+     - `http://localhost:3000/reset-password` (for password recovery in dev)
      - `https://your-app.vercel.app/auth/callback` (replace with your real Vercel URL after deploy)
+     - `https://your-app.vercel.app/reset-password` (for password recovery in production)
 4. **SQL Editor:** run the migrations in order (copy/paste from repo):
    - `supabase/migrations/20260222000001_ai_logs.sql`
    - `supabase/migrations/20260222000002_insights.sql`

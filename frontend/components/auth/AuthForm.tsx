@@ -11,25 +11,10 @@ type Mode = "login" | "signup";
 export default function AuthForm({ mode }: { mode: Mode }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [organizationName, setOrganizationName] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "ok" | "error"; text: string } | null>(null);
   const router = useRouter();
   const supabase = createClient();
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-  async function createOrganization(token: string) {
-    const name = organizationName.trim() || "My team";
-    const res = await fetch(`${apiUrl}/organizations`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ name }),
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.detail || "Failed to create organization.");
-    }
-  }
 
   async function handleEmailSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -46,21 +31,13 @@ export default function AuthForm({ mode }: { mode: Mode }) {
     }
     if (mode === "signup") {
       if (data?.session) {
-        try {
-          await createOrganization(data.session.access_token);
-          setTimeout(() => {
-            window.location.href = "/decision-cards";
-          }, 100);
-          return;
-        } catch (err) {
-          setMessage({ type: "error", text: err instanceof Error ? err.message : "Could not create organization." });
-          return;
-        }
+        window.location.href = "/onboarding";
+        return;
       }
-      setMessage({ type: "ok", text: "Check your email to confirm. When you sign in, you'll create your organization." });
+      setMessage({ type: "ok", text: "Check your email to confirm. When you sign in, you'll complete a short onboarding." });
       return;
     }
-    window.location.href = "/decision-cards";
+    window.location.href = "/onboarding";
   }
 
   async function handleGoogleSignIn() {
@@ -91,16 +68,6 @@ export default function AuthForm({ mode }: { mode: Mode }) {
   return (
     <div className="space-y-4">
       <form onSubmit={handleEmailSubmit} className="space-y-4">
-        {mode === "signup" && (
-          <input
-            type="text"
-            placeholder="Organization name (e.g. Acme AI)"
-            value={organizationName}
-            onChange={(e) => setOrganizationName(e.target.value)}
-            required
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-brand-violet/50 focus:border-transparent transition"
-          />
-        )}
         <input
           type="email"
           placeholder="Email"

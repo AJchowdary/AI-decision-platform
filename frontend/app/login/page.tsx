@@ -30,7 +30,10 @@ export default async function LoginPage({
             </p>
           )}
           <AuthForm mode="login" />
-          <p className="mt-6 text-center text-white/60 text-sm">
+          <p className="mt-4 text-center text-white/60 text-sm">
+            <Link href="/forgot-password" className="text-brand-cyan hover:underline">Forgot password?</Link>
+          </p>
+          <p className="mt-2 text-center text-white/60 text-sm">
             No account?{" "}
             <Link href="/signup" className="text-brand-cyan hover:underline">Create one</Link>
           </p>

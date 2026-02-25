@@ -21,6 +21,8 @@ def get_supabase():
 
 class CreateOrganizationBody(BaseModel):
     name: str
+    account_type: str | None = None  # "organization" | "individual"
+    survey_responses: dict | None = None  # onboarding questionnaire answers
 
 
 def _slug_from_name(name: str) -> str:
@@ -46,11 +48,17 @@ async def create_organization(
         return {"id": existing["id"], "name": existing["name"], "slug": existing.get("slug"), "message": "Already in an organization."}
     slug = _slug_from_name(name)
     trial_ends_at = (datetime.now(timezone.utc) + timedelta(days=14)).isoformat()
+    account_type = (body.account_type or "").strip().lower() if body.account_type else None
+    if account_type and account_type not in ("organization", "individual"):
+        account_type = None
+    survey = body.survey_responses if isinstance(body.survey_responses, dict) else {}
     org_row = {
         "name": name,
         "slug": slug,
         "trial_ends_at": trial_ends_at,
         "subscription_status": "trialing",
+        "account_type": account_type,
+        "survey_responses": survey,
     }
     org_resp = supabase.table("organizations").insert(org_row).execute()
     if not org_resp.data or len(org_resp.data) == 0:

@@ -210,20 +210,34 @@ export default function DecisionCardsClient() {
       {!hasCards && (
         <>
           <section>
-            <h2 className="font-display text-lg font-semibold text-white/50 mb-4">Preview — your cards will look like this</h2>
+            <h2 className="font-display text-lg font-semibold text-white/70 mb-4">This week&apos;s top 3</h2>
             <div className="grid gap-4 md:grid-cols-3">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="card-3d glass rounded-2xl p-6 border border-white/10 opacity-60 pointer-events-none">
+                <div key={i} className="card-3d glass rounded-2xl p-6 border border-white/10 animate-pulse">
                   <div className="h-5 w-full bg-white/10 rounded mb-2" />
                   <div className="h-4 w-full max-w-[90%] bg-white/5 rounded mb-4" />
                   <div className="flex flex-wrap gap-2">
-                    <span className="px-2 py-1 rounded-lg bg-white/10 text-white/50 text-xs">Impact —</span>
-                    <span className="px-2 py-1 rounded-lg bg-white/10 text-white/50 text-xs">Effort —</span>
-                    <span className="px-2 py-1 rounded-lg bg-white/10 text-white/50 text-xs">Confidence —</span>
+                    <span className="px-2 py-1 rounded-lg bg-white/10 w-16 h-5" />
+                    <span className="px-2 py-1 rounded-lg bg-white/10 w-14 h-5" />
+                    <span className="px-2 py-1 rounded-lg bg-white/10 w-20 h-5" />
                   </div>
-                  <p className="text-white/30 text-xs mt-3">View details →</p>
+                  <div className="h-3 w-24 bg-white/5 rounded mt-3" />
                 </div>
               ))}
+            </div>
+          </section>
+          <section className="border-t border-white/10 pt-8">
+            <h2 className="font-display text-lg font-semibold text-white/70 mb-2">Card history</h2>
+            <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden animate-pulse">
+              <div className="p-4 space-y-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex gap-4 items-center">
+                    <div className="h-4 w-24 bg-white/10 rounded" />
+                    <div className="h-4 flex-1 max-w-xs bg-white/5 rounded" />
+                    <div className="h-5 w-14 bg-white/10 rounded" />
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
           <div className="card-3d glass rounded-2xl p-10 text-center border border-dashed border-white/20">

@@ -43,16 +43,17 @@ export default function OnboardingPage() {
           headers: { Authorization: `Bearer ${session.access_token}` },
         });
         const data = await res.json();
+        // If they already have an org, they're an existing user — never show the questionnaire.
+        if (data?.organization) {
+          router.push("/decision-cards");
+          return;
+        }
         const isExistingUser = !!session.user?.user_metadata?.onboarding_completed_at;
         if (isExistingUser) {
-          if (data?.organization) {
-            router.push("/decision-cards");
-            return;
-          }
           router.push("/onboarding/create-org");
           return;
         }
-        // New user (no onboarding_completed_at): always show questionnaire, independent of org.
+        // New user (no org, no onboarding_completed_at): show questionnaire.
       } finally {
         setCheckingOrg(false);
       }
